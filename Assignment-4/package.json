@@ -1,0 +1,17 @@
+{
+  "name": "Lab-5-CS-554",
+  "version": "0.1.0",
+  "description": "",
+  "main": "route.js",
+  "scripts": {
+    "start": "node route.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Megh Vankawala",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.2",
+    "redis": "^2.8.0",
+    "bluebird": "^3.5.1"
+  }
+}

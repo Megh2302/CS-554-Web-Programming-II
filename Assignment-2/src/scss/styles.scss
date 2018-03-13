@@ -1,0 +1,21 @@
+$theme-colors: (
+  "primary": #006633
+);
+
+$body-bg: #6E6E6E;
+
+.m1, #items,h2 {
+    background-color: #DBDCDC !important;
+    color:#006633;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.mb-4{
+    background-color: #DBDCDC !important;
+    color:#006633;
+    border-radius: 3px;
+}
+
+
+@import "node_modules/bootstrap/scss/bootstrap";

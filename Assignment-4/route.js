@@ -1,6 +1,6 @@
+const bluebird = require('bluebird');
 const express = require('express');
 const redis = require('redis');
-const bluebird = require('bluebird');
 const client = redis.createClient();
 const app = express();
 const data = require('./data.js');

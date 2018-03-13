@@ -1,23 +1,21 @@
 const express = require('express');
-const bluebird = require('bluebird');
 const redis = require('redis');
-const data = require('./data.js');
-const app = express();
+const bluebird = require('bluebird');
 const client = redis.createClient();
-
+const app = express();
+const data = require('./data.js');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
 let rl = [];
-
-app.get("/api/people/history", async function (req, res) {
+app.get("/api/people/history", async function (req, res)
+{
     let history = [];
     if (rl.length != 0)
     {
-        for (let i = 0; i < rl.length && i < 20; i++) {
-            history.push(
-                JSON.parse(await client.getAsync(rl[i]))
-        );
+        for (let i = 0; i < rl.length && i < 20; i++)
+        {
+            history.push(JSON.parse(await client.getAsync(rl[i])));
         }
         res.send(history);
     }
@@ -25,11 +23,11 @@ app.get("/api/people/history", async function (req, res) {
     {
         res.status(404).json("No recent users found!");
     }
-
 });
 
 
-app.get("/api/people/:id", async function (req, res) {
+app.get("/api/people/:id", async function (req, res)
+{
     const id = req.params.id;
     const cacheResponse = await client.getAsync(id);
 

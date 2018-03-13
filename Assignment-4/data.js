@@ -1,5 +1,5 @@
 const fs = require("fs");
-let exportedMethods = {
+module.exports = {
     getById(id) {
         return new Promise((res, rej) =>
         {
@@ -21,11 +21,10 @@ let exportedMethods = {
                     }
                     else
                     {
-                        rej("User is Not Found");
+                        rej("No person found with provided ID");
                     }
                 });
             }, 5000);
         });
     }
 }
-module.exports = exportedMethods;

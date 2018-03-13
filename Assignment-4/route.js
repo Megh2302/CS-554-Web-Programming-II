@@ -28,34 +28,24 @@ app.get("/api/people/history", async function (req, res)
 
 app.get("/api/people/:id", async function (req, res)
 {
-    const id = req.params.id;
-    const cacheResponse = await client.getAsync(id);
-
-    if (cacheResponse)
+    const result = await client.getAsync(req.params.id);
+    if (result)
     {
-        res.json({ person: JSON.parse(cacheResponse) });
-        rl.unshift(id);
+        res.json({ person: JSON.parse(result) });
+        rl.unshift(req.params.id);
     }
     else
     {
         try
         {
-            person = await data.getById(parseInt(id, 10));
+            person = await data.getById(parseInt(req.params.id, 10));
             res.json({ person });
-            rl.unshift(id);
-            let cacheRequest = await client.setAsync(id,
-            JSON.stringify(person));
+            rl.unshift(req.params.id);
+            let cacheRequest = await client.setAsync(req.params.id,JSON.stringify(person));
         }
         catch (err)
         {
-            if (typeof(err) === 'object')
-            {
-                res.status(404).json({ error: err.error });
-            }
-            else
-            {
-                res.status(400).json({ error: err });
-            }
+            res.status(400).json(err);
         }
     }
 });

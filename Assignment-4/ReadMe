@@ -1,0 +1,7 @@
+Assignment-4: Redis
+First install redis on your system.
+Steps to run: 
+
+1. npm install
+
+2. npm start

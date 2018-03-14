@@ -7,41 +7,43 @@ const data = require('./data.js');
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
-let rl = [];
+let ul = [];
 app.get("/api/people/history", async function (req, res)
 {
     let history = [];
-    if (rl.length != 0)
+    const len = await client.llenAsync('history');
+    ul = await client.lrangeAsync('history',0,len);
+    if (len != 0)
     {
-        for (let i = 0; i < rl.length && i < 20; i++)
+        for (let i = 0; i < len && i < 20; i++)
         {
-            history.push(JSON.parse(await client.getAsync(rl[i])));
+            history.push(JSON.parse(ul[i]));
         }
-        res.send(history);
+        res.json(history);
     }
     else
     {
-        res.status(404).json("No recent users found!");
+        res.status(404).json("No recent users found!!!");
     }
 });
 
-
 app.get("/api/people/:id", async function (req, res)
 {
-    const result = await client.getAsync(req.params.id);
+    const id = req.params.id;
+    let result = await client.existsAsync(id);
     if (result)
     {
-        res.json({ person: JSON.parse(result) });
-        rl.unshift(req.params.id);
+        res.json(JSON.parse(await client.getAsync(id)));
+        await client.lpush('history', await client.getAsync(id));
     }
     else
     {
         try
         {
-            person = await data.getById(parseInt(req.params.id, 10));
-            res.json({ person });
-            rl.unshift(req.params.id);
-            let cacheRequest = await client.setAsync(req.params.id,JSON.stringify(person));
+            let person = await data.getById(id);
+            await client.setAsync(id, JSON.stringify(person));
+            await client.lpush('history', JSON.stringify(person));
+            res.json(person)
         }
         catch (err)
         {
@@ -51,10 +53,10 @@ app.get("/api/people/:id", async function (req, res)
 });
 
 app.use("*", function (req, res) {
-    res.status(404).json({ error: "Route is not found" });
+    res.status(404).json("Route is not found");
 });
 
 app.listen(3000, function() {
     console.log("We've now got a server!");
-    console.log("Your routes will be running on http://localhost:3000");
+    console.log("Your routes will be running on http://localhost:3000.....");
 });
